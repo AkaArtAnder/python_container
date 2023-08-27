@@ -6,7 +6,4 @@ services:
   python_base:
     build:
         context: .
-    image: python_image
-    environment:
-      - TZ=Europe/Moscow
     command: /bin/sh -c "while sleep 1000; do :; done"

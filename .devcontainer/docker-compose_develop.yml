@@ -5,16 +5,16 @@ services:
       context: .
       dockerfile: .devcontainer/Dockerfile
       args:
-        UID: 1000
-        GID: 1000
-        USER_PASSWORD: user
-        USER_NAME: user
-        DEV_FOLDER: project
-    environment:
-      - TZ=Europe/Moscow
-
+        UID: ${UID}
+        GID: ${GID}
+        USER_PASSWORD: ${USER_PASSWORD}
+        USER_NAME: ${USER_NAME}
+        DEV_FOLDER: ${DEV_FOLDER}
+    env_file: 
+     - .env
+     - .devcontainer/.env
     volumes:
-      - .:/home/user/project:cached
+      - .:/home/${USER_NAME}/$DEV_FOLDER:cached
 
     cap_add:
       - SYS_PTRACE
