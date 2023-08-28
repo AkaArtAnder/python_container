@@ -9,11 +9,11 @@ ARG DEV_FOLDER
 
 RUN apt-get update && apt-get install -y cmake vim sudo bash-completion tmux
 
-#install python utility
-
 #Up ssh server if not used vscode
 RUN sudo apt-get install -y openssh-server
 RUN sed -i 's/#Port 22/Port 22/' /etc/ssh/sshd_config
+
+WORKDIR /root
 COPY .devcontainer/scripts/run.sh .
 RUN chmod +x run.sh
 
