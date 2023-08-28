@@ -39,5 +39,7 @@ RUN /home/${USER_NAME}/.local/bin/poetry completions bash >> /usr/share/bash-com
 USER ${USER_NAME}
 COPY . ${DEV_FOLDER}
 WORKDIR /home/${USER_NAME}/${DEV_FOLDER}
+RUN /home/${USER_NAME}/.local/bin/poetry env use python
+RUN /home/${USER_NAME}/.local/bin/poetry install
 
 USER root
