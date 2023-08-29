@@ -1,4 +1,4 @@
-FROM python:3.11
+FROM python:3.9
 
 #set environment variables
 ARG UID
@@ -6,8 +6,12 @@ ARG GID
 ARG USER_PASSWORD
 ARG USER_NAME
 ARG DEV_FOLDER
+ARG SSH_KEY_NAME
+ARG SSH_HOST
 
 RUN apt-get update && apt-get install -y cmake vim sudo bash-completion tmux
+
+
 
 #Up ssh server if not used vscode
 RUN sudo apt-get install -y openssh-server
@@ -16,6 +20,12 @@ RUN sed -i 's/#Port 22/Port 22/' /etc/ssh/sshd_config
 WORKDIR /root
 COPY .devcontainer/scripts/run.sh .
 RUN chmod +x run.sh
+
+#install poetry
+WORKDIR /etc
+COPY .devcontainer/scripts/pip.conf .
+RUN pip install poetry
+RUN poetry completions bash >> /usr/share/bash-completion/completions/poetry
 
 # Install own utility
 #-----------
@@ -30,16 +40,18 @@ USER ${USER_NAME}
 WORKDIR /home/${USER_NAME}
 RUN mkdir ${DEV_FOLDER}
 
-#add  python user features
-RUN curl -sSL https://install.python-poetry.org | python3 -
-RUN echo "export PATH="/home/${USER_NAME}/.local/bin:$PATH"" >> .bashrc
-USER root
-RUN /home/${USER_NAME}/.local/bin/poetry completions bash >> /usr/share/bash-completion/completions/poetry
-
-USER ${USER_NAME}
 COPY . ${DEV_FOLDER}
 WORKDIR /home/${USER_NAME}/${DEV_FOLDER}
-RUN /home/${USER_NAME}/.local/bin/poetry env use python
-RUN /home/${USER_NAME}/.local/bin/poetry install
+RUN poetry config certificates.PyPI.cert false && poetry config certificates.fpho.cert false 
+RUN echo "export PYTHONWARNINGS=\"ignore:Unverified HTTPS request\"" >> ~/.bashrc
+
+#Setting ssh_key
+WORKDIR /home/${USER_NAME}
+RUN mkdir .ssh
+COPY .devcontainer/ssh_keys/${SSH_KEY_NAME} .ssh/id_ed25519
+USER root
+RUN chmod 777 /home/${USER_NAME}/.ssh && \
+    chmod 777 /home/${USER_NAME}/.ssh/id_ed25519 && \
+    ssh-keyscan -f /home/${USER_NAME}/.ssh/id_ed25519 -t rsa ${SSH_HOST} > /home/${USER_NAME}/.ssh/known_hosts
 
 USER root

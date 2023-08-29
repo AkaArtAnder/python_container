@@ -10,6 +10,8 @@ services:
         USER_PASSWORD: ${USER_PASSWORD}
         USER_NAME: ${USER_NAME}
         DEV_FOLDER: ${DEV_FOLDER}
+        SSH_KEY_NAME: ${SSH_KEY_NAME}
+        SSH_HOST: ${SSH_HOST}
     env_file: 
      - .env
      - .devcontainer/.env
