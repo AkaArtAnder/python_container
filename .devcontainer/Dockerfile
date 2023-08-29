@@ -6,6 +6,8 @@ ARG GID
 ARG USER_PASSWORD
 ARG USER_NAME
 ARG DEV_FOLDER
+ARG SSH_HOST
+ARG SSH_KEY_NAME
 
 RUN apt-get update && apt-get install -y cmake vim sudo bash-completion tmux
 
@@ -41,5 +43,14 @@ COPY . ${DEV_FOLDER}
 WORKDIR /home/${USER_NAME}/${DEV_FOLDER}
 RUN /home/${USER_NAME}/.local/bin/poetry env use python
 RUN /home/${USER_NAME}/.local/bin/poetry install
+
+WORKDIR /home/${USER_NAME}
+RUN mkdir .ssh
+COPY .devcontainer/ssh_keys/${SSH_KEY_NAME} .ssh/id_ed25519
+USER root
+RUN chmod 777 /home/${USER_NAME}/.ssh && \
+    chmod 777 /home/${USER_NAME}/.ssh/id_ed25519 && \
+    ssh-keyscan -f /home/${USER_NAME}/.ssh/id_ed25519 -t rsa ${SSH_HOST} > /home/${USER_NAME}/.ssh/known_hosts \
+    chmod 777 /home/${USER_NAME}/.ssh/known_hosts
 
 USER root

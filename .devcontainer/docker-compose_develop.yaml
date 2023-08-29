@@ -10,6 +10,8 @@ services:
         USER_PASSWORD: ${USER_PASSWORD}
         USER_NAME: ${USER_NAME}
         DEV_FOLDER: ${DEV_FOLDER}
+        SSH_KEY_NAME: ${SSH_KEY_NAME}
+        SSH_HOST: ${SSH_HOST}
     env_file: 
      - .env
      - .devcontainer/.env
@@ -22,9 +24,9 @@ services:
       - seccomp:unconfined
 
     #Uncomment if used vscode
-    command: /bin/sh -c "while sleep 1000; do :; done"
+    # command: /bin/sh -c "while sleep 1000; do :; done"
     #Uncomment if usued other
-    # ports:
-    #   - "2222:22"
-    # command: /root/run.sh
+    ports:
+      - "2222:22"
+    command: /root/run.sh
  
