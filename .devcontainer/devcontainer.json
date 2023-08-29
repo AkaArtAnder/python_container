@@ -46,7 +46,9 @@
 				"ms-python.autopep8",
 				"ms-python.pylint",
 				"ms-python.python",
-				"eamodio.gitlens"
+				"eamodio.gitlens",
+				"tamasfe.even-better-toml",
+				"mhutchie.git-graph"
 			]
 		}
 	}
