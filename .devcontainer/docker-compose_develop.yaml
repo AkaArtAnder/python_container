@@ -10,11 +10,12 @@ services:
         USER_PASSWORD: ${USER_PASSWORD}
         USER_NAME: ${USER_NAME}
         DEV_FOLDER: ${DEV_FOLDER}
-        SSH_KEY_NAME: ${SSH_KEY_NAME}
-        SSH_HOST: ${SSH_HOST}
+        #Uncomment if unused vscode
+        # GIT_USER: ${GIT_USER}
+        # GIT_EMAIL: ${GIT_EMAIL}
     env_file: 
      - .env
-     - .devcontainer/.env
+     - .devcontainer/.env_secret
     volumes:
       - .:/home/${USER_NAME}/$DEV_FOLDER:cached
 

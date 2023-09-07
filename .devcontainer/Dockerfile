@@ -6,8 +6,8 @@ ARG GID
 ARG USER_PASSWORD
 ARG USER_NAME
 ARG DEV_FOLDER
-ARG SSH_HOST
-ARG SSH_KEY_NAME
+ARG GIT_USER
+ARG GIT_EMAIL
 
 RUN apt-get update && apt-get install -y cmake vim sudo bash-completion tmux
 
@@ -44,13 +44,22 @@ WORKDIR /home/${USER_NAME}/${DEV_FOLDER}
 RUN /home/${USER_NAME}/.local/bin/poetry env use python
 RUN /home/${USER_NAME}/.local/bin/poetry install
 
-WORKDIR /home/${USER_NAME}
-RUN mkdir .ssh
-COPY .devcontainer/ssh_keys/${SSH_KEY_NAME} .ssh/id_ed25519
-USER root
-RUN chmod 777 /home/${USER_NAME}/.ssh && \
-    chmod 777 /home/${USER_NAME}/.ssh/id_ed25519 && \
-    ssh-keyscan -f /home/${USER_NAME}/.ssh/id_ed25519 -t rsa ${SSH_HOST} > /home/${USER_NAME}/.ssh/known_hosts \
-    chmod 777 /home/${USER_NAME}/.ssh/known_hosts
+####Comment if use vscode_devcontainer=====================================================
+# # Create ssh folder
+# WORKDIR /home/${USER_NAME}
+# RUN mkdir .ssh
+# RUN chmod -R 700 .ssh
+# #end
+
+# #Set ssh key for authorization
+# COPY --chown=${USER_NAME}:${USER_NAME} .devcontainer/ssh_keys/auth_key.pub .ssh/authorized_keys
+# USER ${USER_NAME}
+# RUN chmod 644 /home/${USER_NAME}/.ssh/authorized_keys
+# # # end
+
+# # # Set git user for remote repository
+# USER ${USER_NAME}
+# RUN git config --global user.name ${GIT_USER} && git config --global user.email ${GIT_EMAIL}
+# ####=====================================================
 
 USER root

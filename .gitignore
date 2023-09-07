@@ -2,3 +2,4 @@ __pycache__
 env/
 ssh_keys/
 .idea/
+.env_secret
